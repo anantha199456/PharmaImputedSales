@@ -1,0 +1,30 @@
+# Development environment configuration
+# Inherits from base.yaml and overrides development-specific settings
+
+!include base.yaml  # Include base configuration
+
+app:
+  environment: "development"
+  debug: true
+  log_level: "DEBUG"
+
+spark:
+  master: "local[*]"
+  driver_memory: "4g"
+  executor_memory: "4g"
+  shuffle_partitions: 4
+  sql_shuffle_partitions: 4
+
+# Development-specific settings
+data:
+  sample_size: 1000  # For testing with smaller datasets in development
+
+# Enable additional logging and debugging
+logging:
+  level: "DEBUG"
+  file: "logs/development.log"
+
+# Development-specific business rules
+business_rules:
+  validation:
+    allowed_null_ratio: 0.05  # More lenient in development

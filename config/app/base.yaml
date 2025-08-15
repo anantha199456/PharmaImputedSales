@@ -1,0 +1,56 @@
+# Base application configuration
+app:
+  name: "Imputed Sales Analytics"
+  version: "1.0.0"
+  environment: "${ENVIRONMENT:development}"
+  log_level: "${LOG_LEVEL:INFO}"
+  debug: ${DEBUG:false}
+
+# Data paths
+data:
+  base_dir: "${DATA_DIR:data}"
+  raw_dir: "${RAW_DATA_DIR:${data.base_dir}/raw}"
+  processed_dir: "${PROCESSED_DATA_DIR:${data.base_dir}/processed}"
+  output_dir: "${OUTPUT_DIR:${data.base_dir}/output}"
+  schemas_dir: "${SCHEMAS_DIR:${data.base_dir}/schemas}"
+
+# Spark configurations
+spark:
+  app_name: "${SPARK_APP_NAME:${app.name}} - ${app.environment}"
+  master: "${SPARK_MASTER:local[*]}"
+  executor_memory: "${SPARK_EXECUTOR_MEMORY:2g}"
+  driver_memory: "${SPARK_DRIVER_MEMORY:2g}"
+  shuffle_partitions: "${SPARK_SHUFFLE_PARTITIONS:8}"
+  sql_shuffle_partitions: "${SPARK_SQL_SHUFFLE_PARTITIONS:8}"
+  max_result_size: "${SPARK_MAX_RESULT_SIZE:2g}"
+  dynamic_allocation_enabled: "${SPARK_DYNAMIC_ALLOCATION_ENABLED:true}"
+  executor_cores: "${SPARK_EXECUTOR_CORES:2}"
+  executor_instances: "${SPARK_EXECUTOR_INSTANCES:2}"
+
+# Business rules
+business_rules:
+  inventory:
+    min_confidence_score: 0.7
+    max_imputation_ratio: 1.5
+  sales:
+    default_currency: "USD"
+    max_negative_sales: 0.01  # Max allowed % of negative sales
+  validation:
+    required_columns: ["product_id", "year_month", "quantity", "amount"]
+    allowed_null_ratio: 0.01
+    value_ranges:
+      quantity:
+        min: 0
+        max: 1000000
+      amount:
+        min: 0
+        max: 10000000
+
+# Logging configuration
+logging:
+  level: "${app.log_level}"
+  file: "logs/${app.name}.log"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"

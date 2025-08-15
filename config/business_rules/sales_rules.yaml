@@ -1,0 +1,182 @@
+# Sales Business Rules Configuration
+
+# General sales settings
+sales:
+  # Default currency for sales amounts
+  default_currency: "USD"
+  
+  # Date format for sales data
+  date_format: "yyyy-MM-dd"
+  
+  # Rounding rules for monetary values
+  rounding:
+    decimals: 2
+    mode: "HALF_UP"
+
+# Price rules
+pricing:
+  # Minimum allowed price (as a percentage of cost)
+  min_price_percent_of_cost: 110.0
+  
+  # Maximum allowed price increase (%)
+  max_price_increase_percent: 20.0
+  
+  # Maximum allowed price decrease (%)
+  max_price_decrease_percent: 10.0
+  
+  # Price rounding rules
+  rounding:
+    decimals: 2
+    mode: "HALF_UP"
+
+# Discount rules
+discounts:
+  # Maximum allowed discount (%)
+  max_discount_percent: 30.0
+  
+  # Minimum order value for discount eligibility
+  min_order_value: 100.00
+  
+  # Maximum discount amount
+  max_discount_amount: 1000.00
+  
+  # Approval required for discounts above this amount
+  approval_threshold: 500.00
+
+# Customer segmentation rules
+customer_segments:
+  # Segmentation criteria and rules
+  segments:
+    - name: "Platinum"
+      min_annual_sales: 1000000.00
+      discount_tier: 1
+      priority_support: true
+      
+    - name: "Gold"
+      min_annual_sales: 500000.00
+      max_annual_sales: 999999.99
+      discount_tier: 2
+      priority_support: true
+      
+    - name: "Silver"
+      min_annual_sales: 100000.00
+      max_annual_sales: 499999.99
+      discount_tier: 3
+      
+    - name: "Bronze"
+      max_annual_sales: 99999.99
+      discount_tier: 4
+
+# Sales territory rules
+territories:
+  # Territory definitions and assignments
+  regions:
+    - name: "North America"
+      countries: ["US", "CA", "MX"]
+      manager: "North America Sales Director"
+      
+    - name: "Europe"
+      countries: ["GB", "DE", "FR", "IT", "ES", "NL", "BE", "LU", "CH", "AT"]
+      manager: "Europe Sales Director"
+      
+    - name: "APAC"
+      countries: ["CN", "JP", "KR", "AU", "NZ", "SG", "IN"]
+      manager: "APAC Sales Director"
+
+# Sales commission rules
+commissions:
+  # Commission rates by role
+  rates:
+    - role: "Sales Representative"
+      base_rate: 0.05  # 5%
+      accelerator_rate: 0.02  # Additional 2% for exceeding quota
+      
+    - role: "Account Manager"
+      base_rate: 0.03  # 3%
+      accelerator_rate: 0.01  # Additional 1% for exceeding quota
+      
+    - role: "Sales Manager"
+      base_rate: 0.02  # 2%
+      override_rate: 0.01  # 1% of team's sales
+  
+  # Quota settings
+  quotas:
+    period: "monthly"  # or "quarterly"
+    adjustment_window_months: 3  # For calculating rolling averages
+    
+  # Payout rules
+  payout:
+    minimum_payout: 100.00
+    holdback_percent: 20.0  # Percentage held back for returns
+    holdback_period_days: 90  # Days to hold back commission
+
+# Return and refund rules
+returns:
+  # Time limits for returns
+  time_limits:
+    standard_return_days: 30
+    defective_return_days: 90
+    
+  # Restocking fees
+  restocking_fee_percent: 15.0
+  waiver_threshold: 1000.00  # Amount above which restocking fee is waived
+  
+  # Return reasons and their handling
+  reasons:
+    - code: "DEFECTIVE"
+      name: "Defective Product"
+      requires_rma: true
+      restocking_fee: 0.0
+      
+    - code: "WRONG_ITEM"
+      name: "Wrong Item Shipped"
+      requires_rma: false
+      restocking_fee: 0.0
+      
+    - code: "CUSTOMER_CHANGE"
+      name: "Customer Changed Mind"
+      requires_rma: false
+      restocking_fee: 15.0
+
+# Sales forecasting rules
+forecasting:
+  # Default forecast horizon in days
+  horizon_days: 90
+  
+  # Confidence interval for forecasts (0.0 to 1.0)
+  confidence_level: 0.95
+  
+  # Seasonality settings
+  seasonality:
+    daily: true
+    weekly: true
+    monthly: true
+    yearly: true
+    
+  # Trend components
+  trend:
+    growth: "linear"  # or "logistic", "flat"
+    changepoint_prior_scale: 0.05
+    changepoint_range: 0.8
+
+# Sales performance metrics
+metrics:
+  # Key performance indicators
+  kpis:
+    - name: "Revenue"
+      target_growth_quarterly: 0.05  # 5% quarterly growth
+      
+    - name: "Gross Margin"
+      target_min: 0.40  # 40% minimum
+      
+    - name: "Customer Acquisition Cost"
+      target_max: 500.00
+      
+    - name: "Customer Lifetime Value"
+      target_min: 3000.00
+  
+  # Sales cycle metrics
+  sales_cycle:
+    average_days_to_close: 45
+    target_conversion_rate: 0.25  # 25% of leads to opportunities
+    target_win_rate: 0.35  # 35% of opportunities to closed-won

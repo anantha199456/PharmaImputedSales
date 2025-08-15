@@ -1,0 +1,6 @@
+product_id,indication,patient_segment,study_date,study_duration_months,observed_adherence_rate,refill_rate,persistence_rate,data_source
+PROD_A,IND_001,ALL,45444,12,0.72,0.68,0.65,INTERNAL
+PROD_B,IND_002,ALL,45444,12,0.91,0.89,0.85,INTERNAL
+PROD_C,IND_003,ALL,45444,12,0.69,0.65,0.62,INTERNAL
+PROD_D,IND_004,ALL,45444,12,0.75,0.72,0.7,INTERNAL
+PROD_E,IND_005,ALL,45444,12,0.88,0.86,0.83,INTERNAL

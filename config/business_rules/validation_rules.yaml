@@ -1,0 +1,213 @@
+# Data Validation Rules Configuration
+
+# General validation settings
+validation:
+  # Default validation level: WARN, ERROR, or IGNORE
+  default_level: "ERROR"
+  
+  # Maximum percentage of records that can fail validation before the job fails
+  max_failure_percent: 1.0
+  
+  # Whether to continue processing if validation fails
+  continue_on_failure: false
+
+# Field-level validation rules
+fields:
+  # Product ID validation
+  product_id:
+    required: true
+    type: "string"
+    pattern: "^[A-Z0-9]{3,10}-[A-Z0-9]{3,10}$"
+    description: "Product ID must be in format XXX-XXX"
+    
+  # Date validation
+  transaction_date:
+    required: true
+    type: "date"
+    format: "yyyy-MM-dd"
+    min_date: "2000-01-01"
+    max_date: "current_date"
+    
+  # Numeric amount validation
+  amount:
+    required: true
+    type: "decimal"
+    min: 0.0
+    max: 1000000.0
+    precision: 2
+    
+  # Quantity validation
+  quantity:
+    required: true
+    type: "integer"
+    min: 0
+    max: 1000000
+    
+  # Currency code validation
+  currency:
+    required: true
+    type: "string"
+    allowed_values: ["USD", "EUR", "GBP", "JPY", "CAD"]
+    default: "USD"
+
+# Record-level validation rules
+records:
+  # Check for duplicate transactions
+  duplicate_transactions:
+    enabled: true
+    level: "ERROR"
+    fields: ["transaction_id", "product_id", "transaction_date"]
+    description: "Duplicate transactions with same ID, product and date"
+    
+  # Check for negative inventory
+  negative_inventory:
+    enabled: true
+    level: "ERROR"
+    condition: "inventory_balance < 0"
+    description: "Inventory balance cannot be negative"
+    
+  # Check for unusually large orders
+  large_orders:
+    enabled: true
+    level: "WARN"
+    condition: "amount > 10000.00"
+    description: "Order amount exceeds $10,000"
+    
+  # Check for price changes
+  price_variance:
+    enabled: true
+    level: "WARN"
+    condition: "abs((price - avg_price_30d) / avg_price_30d) > 0.10"
+    description: "Price varies by more than 10% from 30-day average"
+
+# Cross-field validation rules
+cross_field:
+  # Validate that total amount = quantity * unit price
+  amount_calculation:
+    enabled: true
+    level: "ERROR"
+    condition: "abs(amount - (quantity * unit_price)) > 0.01"
+    description: "Calculated amount does not match total amount"
+    
+  # Validate that discount does not exceed maximum allowed
+  discount_validation:
+    enabled: true
+    level: "ERROR"
+    condition: "discount_amount > (amount * max_discount_percent / 100.0)"
+    description: "Discount exceeds maximum allowed percentage"
+
+# Reference data validation
+reference_data:
+  # Validate product IDs against reference data
+  product_reference:
+    enabled: true
+    level: "ERROR"
+    reference_table: "dim_products"
+    join_fields: ["product_id"]
+    description: "Product ID not found in reference data"
+    
+  # Validate customer IDs against reference data
+  customer_reference:
+    enabled: true
+    level: "ERROR"
+    reference_table: "dim_customers"
+    join_fields: ["customer_id"]
+    description: "Customer ID not found in reference data"
+
+# Temporal validation rules
+temporal:
+  # Check for future-dated transactions
+  future_dates:
+    enabled: true
+    level: "ERROR"
+    condition: "transaction_date > current_date"
+    description: "Transaction date is in the future"
+    
+  # Check for stale data
+  data_freshness:
+    enabled: true
+    level: "WARN"
+    max_age_days: 7
+    description: "Data is more than 7 days old"
+
+# Business rule validations
+business_rules:
+  # Minimum order amount for wholesale customers
+  wholesale_min_order:
+    enabled: true
+    level: "ERROR"
+    condition: "customer_type == 'WHOLESALE' and amount < 500.00"
+    description: "Wholesale orders must be at least $500"
+    
+  # Maximum discount for retail customers
+  retail_discount_limit:
+    enabled: true
+    level: "ERROR"
+    condition: "customer_type == 'RETAIL' and discount_percent > 15.0"
+    description: "Retail customers cannot receive more than 15% discount"
+
+# Data quality metrics
+data_quality:
+  # Required fields check
+  completeness:
+    enabled: true
+    level: "ERROR"
+    required_fields: ["order_id", "customer_id", "product_id", "quantity", "amount"]
+    
+  # Data type validation
+  type_validation:
+    enabled: true
+    level: "ERROR"
+    
+  # Value range validation
+  range_validation:
+    enabled: true
+    level: "WARN"
+    
+  # Pattern matching
+  pattern_matching:
+    enabled: true
+    level: "WARN"
+    
+  # Uniqueness validation
+  uniqueness:
+    enabled: true
+    level: "ERROR"
+    unique_fields: ["order_id"]
+
+# Validation thresholds
+thresholds:
+  # Maximum percentage of records that can fail validation by level
+  max_error_percent: 1.0
+  max_warning_percent: 5.0
+  
+  # Minimum data quality score (0-100)
+  min_quality_score: 95.0
+  
+  # Minimum sample size for statistical validation
+  min_sample_size: 1000
+
+# Validation reporting
+reporting:
+  # Report formats to generate
+  formats: ["html", "json", "csv"]
+  
+  # Detailed validation report
+  detailed_report: true
+  
+  # Summary report
+  summary_report: true
+  
+  # Data quality scorecard
+  quality_scorecard: true
+  
+  # Output directory for reports
+  output_dir: "reports/validation"
+  
+  # Email notification settings
+  email_notification:
+    enabled: false
+    recipients: []
+    on_failure: true
+    on_warning: false
+    on_success: false

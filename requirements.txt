@@ -1,0 +1,4 @@
+pyspark==3.3.0
+pandas==1.5.3
+pyarrow==10.0.1
+findspark==2.0.1

@@ -1,0 +1,131 @@
+# Sales Consolidation Configuration
+
+# Paths
+paths:
+  processed_data: "processed_data"
+  output:
+    base_path: "final_output"
+    format: "parquet"
+    mode: "overwrite"
+
+# Data sources
+sources:
+  - name: "inventory_sales"
+    filename: "inventory_adjusted_sales.csv"
+    required: true
+    key_columns: ["distributor_id", "product_id", "year_month"]
+
+  - name: "adjusted_sales"
+    filename: "adjusted_secondary_sales.csv"
+    required: true
+    key_columns: ["distributor_id", "product_id", "year_month"]
+
+  - name: "rolling_avg"
+    filename: "rolling_avg_sales.csv"
+    required: false
+    key_columns: ["product_id", "year_month"]
+
+  - name: "market_share"
+    filename: "market_share_sales.csv"
+    required: false
+    key_columns: ["product_id", "market_id", "year_month"]
+
+  - name: "tender_sales"
+    filename: "tender_based_sales.csv"
+    required: false
+    key_columns: ["product_id", "region_id", "year_month"]
+
+  - name: "return_adjusted"
+    filename: "return_adjusted_sales.csv"
+    required: true
+    key_columns: ["distributor_id", "product_id", "year_month"]
+
+  - name: "lives_based"
+    filename: "lives_based_sales.csv"
+    required: false
+    key_columns: ["payer_id", "product_id", "year_month"]
+
+  - name: "claims_based"
+    filename: "claims_based_sales.csv"
+    required: false
+    key_columns: ["product_id", "region_id", "year_month"]
+
+  - name: "utilization"
+    filename: "utilization_based_sales.csv"
+    required: false
+    key_columns: ["product_id", "payer_id", "year_month"]
+
+  - name: "tier_adjusted"
+    filename: "tier_adjusted_sales.csv"
+    required: false
+    key_columns: ["product_id", "payer_id", "year_month"]
+
+  - name: "standard_units"
+    filename: "standardized_unit_sales.csv"
+    required: true
+    key_columns: ["product_id", "year_month"]
+
+  - name: "adherence"
+    filename: "adherence_adjusted_sales.csv"
+    required: false
+    key_columns: ["product_id", "patient_id", "year_month"]
+
+# Data quality rules
+data_quality:
+  required_columns: ["product_id", "year_month"]
+  allowed_null_ratio: 0.01
+  value_ranges:
+    sales_amount:
+      min: 0
+      max: 1000000
+    quantity:
+      min: 0
+      max: 100000
+
+# Performance settings
+performance:
+  shuffle_partitions: 8
+  broadcast_timeout: 300
+  auto_broadcast_join_threshold: 10485760  # 10MB
+  cache_strategy: "MEMORY_AND_DISK"
+
+# Logging
+logging:
+  level: "INFO"
+  file: "logs/sales_consolidation.log"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+# Output schema
+output_schema:
+  - name: "distributor_id"
+    type: "string"
+    nullable: true
+    description: "ID of the distributor"
+
+  - name: "product_id"
+    type: "string"
+    nullable: false
+    description: "ID of the product"
+
+  - name: "year_month"
+    type: "string"
+    nullable: false
+    description: "Year and month in YYYYMM format"
+
+  - name: "final_sales"
+    type: "double"
+    nullable: false
+    description: "Final consolidated sales amount"
+
+  - name: "source_system"
+    type: "string"
+    nullable: false
+    default: "SALES_CONSOLIDATION"
+    description: "System that generated this record"
+
+  - name: "processing_timestamp"
+    type: "timestamp"
+    nullable: false
+    default: "current_timestamp()"
+    description: "When this record was processed"

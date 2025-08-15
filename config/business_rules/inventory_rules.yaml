@@ -1,0 +1,118 @@
+# Inventory Business Rules Configuration
+
+# Inventory adjustment rules
+inventory:
+  # General settings
+  adjustment:
+    # Minimum confidence score required for imputation (0.0 to 1.0)
+    min_confidence_score: 0.7
+    
+    # Maximum allowed ratio of imputed to actual values (to prevent outliers)
+    max_imputation_ratio: 1.5
+    
+    # Default value to use when no data is available
+    default_imputed_value: 0.0
+    
+  # Inventory aging rules
+  aging:
+    # Number of days after which inventory is considered aged
+    aging_threshold_days: 365
+    
+    # Categories for inventory aging
+    categories:
+      - name: "Current"
+        max_days: 90
+      - name: "30-90 Days"
+        min_days: 30
+        max_days: 90
+      - name: "90-180 Days"
+        min_days: 90
+        max_days: 180
+      - name: "180-365 Days"
+        min_days: 180
+        max_days: 365
+      - name: "Over 1 Year"
+        min_days: 365
+
+  # Inventory valuation rules
+  valuation:
+    # Valuation method: FIFO, LIFO, or AVERAGE
+    method: "FIFO"
+    
+    # Currency for valuation
+    default_currency: "USD"
+    
+    # Rounding rules
+    decimal_places: 2
+    rounding_mode: "HALF_UP"
+
+  # Inventory reconciliation rules
+  reconciliation:
+    # Allowed variance between physical and system counts (%)
+    allowed_variance_percent: 1.0
+    
+    # Minimum count threshold for variance checking
+    min_count_for_variance: 10
+
+  # Inventory forecasting rules
+  forecasting:
+    # Default number of days to forecast
+    forecast_horizon_days: 30
+    
+    # Confidence interval for forecasts (0.0 to 1.0)
+    confidence_level: 0.95
+    
+    # Seasonality settings
+    seasonality:
+      daily: true
+      weekly: true
+      monthly: true
+      yearly: true
+
+  # Safety stock calculation rules
+  safety_stock:
+    # Service level (0.0 to 1.0)
+    service_level: 0.95
+    
+    # Lead time in days
+    lead_time_days: 7
+    
+    # Review period in days
+    review_period_days: 30
+
+  # Inventory write-off rules
+  write_off:
+    # Minimum days before inventory can be written off
+    min_days_before_writeoff: 365
+    
+    # Maximum value that can be written off without approval
+    auto_writeoff_threshold: 1000.00
+    
+    # Required approval levels for write-offs
+    approval_levels:
+      - max_amount: 1000.00
+        approver: "Manager"
+      - max_amount: 10000.00
+        approver: "Director"
+      - max_amount: 50000.00
+        approver: "VP"
+      - max_amount: 1000000000.00  # Effectively no upper limit
+        approver: "CFO"
+
+  # Inventory movement rules
+  movement:
+    # Minimum movement threshold for tracking
+    min_movement_threshold: 0.01
+    
+    # Categories for movement analysis
+    categories:
+      - name: "Fast Moving"
+        min_turns_per_year: 12
+      - name: "Medium Moving"
+        min_turns_per_year: 4
+        max_turns_per_year: 12
+      - name: "Slow Moving"
+        min_turns_per_year: 1
+        max_turns_per_year: 4
+      - name: "Non-Moving"
+        max_turns_per_year: 1

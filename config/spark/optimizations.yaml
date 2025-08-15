@@ -1,0 +1,88 @@
+# Advanced Spark optimization settings
+# These settings are tuned for performance in production environments
+
+spark:
+  # Memory and execution
+  memory:
+    offHeap:
+      enabled: "${SPARK_MEMORY_OFFHEAP_ENABLED:true}"
+      size: "${SPARK_MEMORY_OFFHEAP_SIZE:2g}"
+    
+  # Serialization
+  serializer: "org.apache.spark.serializer.KryoSerializer"
+  kryo:
+    registrationRequired: "${SPARK_KRYO_REGISTRATION_REQUIRED:false}"
+    referenceTracking: "${SPARK_KRYO_REFERENCE_TRACKING:true}"
+    classesToRegister: ""
+    
+  # SQL optimizations
+  sql:
+    # Partitioning and file management
+    files:
+      maxPartitionBytes: "${SPARK_SQL_FILES_MAX_PARTITION_BYTES:134217728}"  # 128MB
+      openCostInBytes: "${SPARK_SQL_FILES_OPEN_COST_IN_BYTES:4194304}"  # 4MB
+    
+    # Join optimizations
+    join:
+      preferSortMergeJoin: "${SPARK_SQL_JOIN_PREFER_SORT_MERGE_JOIN:true}"
+      broadcastTimeout: "${SPARK_SQL_BROADCAST_JOIN_TIMEOUT:300}"
+      autoBroadcastJoinThreshold: "${SPARK_SQL_AUTO_BROADCAST_JOIN_THRESHOLD:10485760}"  # 10MB
+    
+    # Code generation
+    codegen:
+      wholeStage: "${SPARK_SQL_CODEGEN_WHOLESTAGE:true}"
+      method:
+        splitAggregateFunc: "${SPARK_SQL_CODEGEN_METHOD_SPLIT_AGGREGATE_FUNC:true}"
+    
+    # Shuffle partitions (tune based on data size)
+    shuffle:
+      partitions: "${SPARK_SQL_SHUFFLE_PARTITIONS:200}"
+    
+    # Adaptive query execution (AQE)
+    adaptive:
+      enabled: "${SPARK_SQL_ADAPTIVE_ENABLED:true}"
+      coalescePartitions:
+        enabled: "${SPARK_SQL_ADAPTIVE_COALESCE_PARTITIONS_ENABLED:true}"
+        minPartitionNum: "${SPARK_SQL_ADAPTIVE_COALESCE_PARTITIONS_MIN_PARTITION_NUM:1}"
+      skewJoin:
+        enabled: "${SPARK_SQL_ADAPTIVE_SKEW_JOIN_ENABLED:true}"
+      localShuffleReader:
+        enabled: "${SPARK_SQL_ADAPTIVE_LOCAL_SHUFFLE_READER_ENABLED:true}"
+  
+  # Dynamic allocation
+  dynamicAllocation:
+    enabled: "${SPARK_DYNAMIC_ALLOCATION_ENABLED:true}"
+    executorIdleTimeout: "${SPARK_DYNAMIC_ALLOCATION_EXECUTOR_IDLE_TIMEOUT:60s}"
+    cachedExecutorIdleTimeout: "${SPARK_DYNAMIC_ALLOCATION_CACHED_EXECUTOR_IDLE_TIMEOUT:infinity}"
+    initialExecutors: "${SPARK_DYNAMIC_ALLOCATION_INITIAL_EXECUTORS:minExecutors}"
+    minExecutors: "${SPARK_DYNAMIC_ALLOCATION_MIN_EXECUTORS:1}"
+    maxExecutors: "${SPARK_DYNAMIC_ALLOCATION_MAX_EXECUTORS:100}"
+    
+  # Shuffle service
+  shuffle:
+    service:
+      enabled: "${SPARK_SHUFFLE_SERVICE_ENABLED:true}"
+    
+  # I/O and compression
+  io:
+    compression:
+      codec: "${SPARK_IO_COMPRESSION_CODEC:snappy}"
+      snappy:
+        blockSize: "${SPARK_IO_COMPRESSION_SNAPPY_BLOCKSIZE:32k}"
+  
+  # Memory management
+  memory:
+    offHeap:
+      enabled: "${SPARK_MEMORY_OFFHEAP_ENABLED:true}"
+      size: "${SPARK_MEMORY_OFFHEAP_SIZE:2g}"
+    
+  # Network settings
+  network:
+    timeout: "${SPARK_NETWORK_TIMEOUT:120s}"
+    
+  # Debug and monitoring
+  eventLog:
+    enabled: "${SPARK_EVENTLOG_ENABLED:true}"
+    dir: "${SPARK_EVENTLOG_DIR:file:///tmp/spark-events}"
+    logBlockUpdates:
+      enabled: "${SPARK_EVENTLOG_LOG_BLOCK_UPDATES:false}"

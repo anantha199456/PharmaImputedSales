@@ -1,0 +1,40 @@
+# Production environment configuration
+# Inherits from base.yaml and overrides production-specific settings
+
+!include base.yaml  # Include base configuration
+
+app:
+  environment: "production"
+  debug: false
+  log_level: "INFO"
+
+spark:
+  master: "yarn"  # or "spark://<master-ip>:<port>" for standalone cluster
+  driver_memory: "8g"
+  executor_memory: "8g"
+  executor_instances: 10
+  executor_cores: 4
+  shuffle_partitions: 200
+  sql_shuffle_partitions: 200
+  dynamic_allocation_enabled: true
+  max_result_size: "4g"
+
+# Production-specific settings
+data:
+  base_dir: "/data/imputed_sales"
+  raw_dir: "${data.base_dir}/raw"
+  processed_dir: "${data.base_dir}/processed"
+  output_dir: "${data.base_dir}/output"
+  schemas_dir: "${data.base_dir}/schemas"
+
+# Production logging configuration
+logging:
+  level: "INFO"
+  file: "/var/log/imputed_sales/production.log"
+  max_bytes: 104857600  # 100MB
+  backup_count: 10
+
+# Production business rules (stricter validation)
+business_rules:
+  validation:
+    allowed_null_ratio: 0.001  # Stricter in production

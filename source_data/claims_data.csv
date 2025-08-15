@@ -1,0 +1,6 @@
+payer_id,plan_id,product_id,year_month,approved_claims,denied_claims,avg_units_per_claim,avg_cost_per_claim,patient_count
+PAYER001,PLAN_A,PROD_A,202501,625,42,1.2,1200,520
+PAYER001,PLAN_B,PROD_A,202501,438,31,1.2,1200,365
+PAYER002,PLAN_C,PROD_A,202501,1344,96,1.2,1200,1120
+PAYER002,PLAN_D,PROD_A,202501,399,28,1.2,1200,332
+PAYER003,PLAN_E,PROD_A,202501,270,18,1.2,1200,225

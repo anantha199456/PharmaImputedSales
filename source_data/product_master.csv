@@ -1,0 +1,6 @@
+product_id,product_name,dosage_form,strength,pack_size,units_per_pack,conversion_factor,condition_type,adherence_rate
+PROD_A,Product Alpha,TABLET,10MG,30,30,1,CHRONIC,0.7
+PROD_B,Product Beta,VIAL,100MG,1,1,100,ACUTE,0.9
+PROD_C,Product Charlie,TABLET,25MG,60,60,2.5,CHRONIC,0.7
+PROD_D,Product Delta,INHALER,250MCG,1,200,0.05,CHRONIC,0.7
+PROD_E,Product Echo,INJECTION,50MG,2,2,50,ACUTE,0.9
